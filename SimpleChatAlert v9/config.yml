@@ -1,0 +1,54 @@
+#|-----------------------|#
+#|    ####  ####  ###    |#
+#|   #     #     #   #   |#
+#|    ###  #     #####   |# - This looks so unimpressive
+#|       # #     #   #   |# - But doing SIMPLECHATALERT was
+#|   ####   #### #   #   |# - Way to big so I made it smaller.
+#|-----------------------|#
+
+# Change what the message looks like! Don't forget the ''  #
+# You can use {PLAYER} which puts the senders username!    #
+# You can also use color codes by using & -Enjoy SCA       #
+Message: '&4&lALERT: &c&l'
+
+# Change what the mesage is if the sender does not have    #
+# the correct permission. You can use color codes.
+NoPermission: '&4You do not have access to this command!'
+
+# Change what the message is if the sender does not imput  #
+# A message with the /alert command. Uses color codes.     #
+NoMessage: '&cPlease add a message! Example: &4&o/alert Welcome to the server!'
+
+# Do you want the command to put the message into the chat #
+ChatAlert: true
+
+# If you want the ActionBar to work, install this plugin   #
+# https://www.spigotmc.org/resources/actionbarapi.1315/    #
+ActionBar: false
+
+# If you wish to use the BossBar, get the plugin BarAPI    #
+# http://ci.frostcast.net/job/BarAPI/                      #
+BossBar: false
+
+# Allows you to make the alert be in the form of a title   #
+# The `Message` format is the main title and the subtitle  #
+# is in the form of the arguments. - New Feature           #
+# Link: https://www.spigotmc.org/resources/titleapi.1325/  #
+Title: false
+
+# Change the title's color/format, must have '' in it.     #
+TitlePrefix: '&4&lALERT:'
+
+# Change the subtitles color/format, must have '' in it    #
+TitleColor: '&c&l'
+
+# Do you want the sender to `Glow`? - EXPERIMENTAL FEATURE #
+Glow: false
+
+# Done in seconds, how long should the player glow?        #
+GlowTime: 10
+
+# Checks if there are any updates and messages the console #
+# If any are found, it will put a message in the console   #
+# Throws an error if you are not connected to the internet #
+UpdateChecker: false
