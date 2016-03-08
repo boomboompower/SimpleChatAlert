@@ -1,7 +1,7 @@
 /** ==Plugin Information==
- * @Name        Epic Crafting
- * @Desription  Adds some super advanced options to the game!
- * @Website     http://boomboompower.wee&9y.com/
+ * @Name        SimpleChatAlert
+ * @Desription  A simple alert plugin for your server!
+ * @Website     http://boomboompower.weebly.com/
  * @Version     9.0
  * @Author      boomboompower 
 **/

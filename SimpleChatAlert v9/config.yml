@@ -22,18 +22,15 @@ NoMessage: '&cPlease add a message! Example: &4&o/alert Welcome to the server!'
 # Do you want the command to put the message into the chat #
 ChatAlert: true
 
-# If you want the ActionBar to work, install this plugin   #
-# https://www.spigotmc.org/resources/actionbarapi.1315/    #
+# ----------- CURRENTLY NOT WORKING ON PURPOSE ----------- #
 ActionBar: false
 
-# If you wish to use the BossBar, get the plugin BarAPI    #
-# http://ci.frostcast.net/job/BarAPI/                      #
+# No API is needed, this is now built in! :D               #
 BossBar: false
 
 # Allows you to make the alert be in the form of a title   #
-# The `Message` format is the main title and the subtitle  #
-# is in the form of the arguments. - New Feature           #
-# Link: https://www.spigotmc.org/resources/titleapi.1325/  #
+# Change TitlePrefix to change the top bar and edit        #
+# TitleColor to edit the subtitle no API needed for this!  #        
 Title: false
 
 # Change the title's color/format, must have '' in it.     #
