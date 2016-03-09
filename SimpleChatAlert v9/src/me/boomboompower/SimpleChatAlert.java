@@ -103,6 +103,8 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     	status("&cDisabled");
     	
     	for (Player all : Bukkit.getOnlinePlayers()) {
+    		bar.removePlayer(all);
+    		bar.hide();
     		all.resetTitle();
     	}
     }
@@ -183,7 +185,6 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    } if (getConfig().getBoolean("Title")) {
 				    	AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
 				    } if (getConfig().getBoolean("Glow")) {
-				    	p.setGlowing(true);
 				    	AlertUtils.glowAlert(p);
 				    }
 			    }
@@ -218,7 +219,6 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     	
     	for (Player all : Bukkit.getOnlinePlayers()) {
     		
-    		bar.show();
     		bar.removeFlag(BarFlag.PLAY_BOSS_MUSIC);
     		bar.setProgress(100);
     		
