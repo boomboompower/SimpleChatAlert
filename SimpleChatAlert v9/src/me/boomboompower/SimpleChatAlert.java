@@ -34,6 +34,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.boomboompower.Utils.AlertUtils;
 import net.minecraft.server.v1_9_R1.BossBattleServer;
 import net.minecraft.server.v1_9_R1.ChatMessage;
 import net.minecraft.server.v1_9_R1.EntityPlayer;
@@ -44,6 +45,7 @@ import net.minecraft.server.v1_9_R1.PlayerConnection;
 @SuppressWarnings({"deprecation", "unused"})
 public class SimpleChatAlert extends JavaPlugin implements Listener {
 	private static UpdateChecker updateChecker;
+	private static SimpleChatAlert sca;
     private PlayerConnection playerConnection;
     private BarFlag flags = BarFlag.PLAY_BOSS_MUSIC;
     private BarColor color = BarColor.RED;
@@ -124,6 +126,7 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     			} else if (args[0].equalsIgnoreCase("removeboss")) {
     				for (Player all : Bukkit.getOnlinePlayers()) {
     					bar.removePlayer(all);
+    					bar.hide();
     				}
     			} else if (args[0].equalsIgnoreCase("reload")) {
     				reloadConfig();
@@ -144,13 +147,10 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    sendMessage(sender, getConfig().getString("NoMessage"));
 			    } else {
 				    if (getConfig().getBoolean("ChatAlert")) {
-				    	sendChatAlert(getConfig().getString("Message") + message(args, sender.getName()), sender);
+				    	AlertUtils.chatAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
 				    } if (getConfig().getBoolean("BossBar")) {
 					    for (Player all : Bukkit.getOnlinePlayers()) {
-					    	bossAlert(getConfig().getString("Message") + message(args, sender.getName()), sender);
-						    
-					    	
-					    	//BarAPI.setMessage(all, ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message") + message(args)).replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+					    	bossAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
 					    }
 				    } if (getConfig().getBoolean("ActionBar")) {
 					    for (Player all : Bukkit.getOnlinePlayers()) {
@@ -159,7 +159,7 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 					    }
 				    } if (getConfig().getBoolean("Title")) {
 				    	for (Player all : Bukkit.getOnlinePlayers()) {
-				    		sendTitle(getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + message(args, sender.getName()), sender);
+				    		AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
 				    	}
 				    }
 			    }
@@ -171,61 +171,25 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("NoMessage")));
 			    } else if (args.length > 0) {
 				    if (getConfig().getBoolean("ChatAlert")) {
-					    sendChatAlert(getConfig().getString("Message") + message(args, sender.getName()), sender);
+				    	AlertUtils.chatAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
 				    } if (getConfig().getBoolean("BossBar")) {
 				    	for (Player all : Bukkit.getOnlinePlayers()) {
-				    		bossAlert(getConfig().getString("Message") + message(args, sender.getName()), sender);
-				    		
-				    		
-				    		//BarAPI.setMessage(all, ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message") + message(args)).replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+				    		bossAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
 				    	}
 				    } if (getConfig().getBoolean("ActionBar")) {
-				    	//for (Player all : Bukkit.getOnlinePlayers()) {
-				    	Bukkit.getOnlinePlayers().size();
-				    		//ActionBarAPI.sendActionBar(all, ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message") + message(args)).replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
-				    	//}
+				    	for (Player all : Bukkit.getOnlinePlayers()) {
+				    		AlertUtils.actionBarAlert(all, getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()));
+				    	}
 				    } if (getConfig().getBoolean("Title")) {
-				    	sendTitle(getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + message(args, sender.getName()), p);
+				    	AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
 				    } if (getConfig().getBoolean("Glow")) {
 				    	p.setGlowing(true);
-				    	stopGlow(getConfig().getInt("GlowTime"), p);
+				    	AlertUtils.glowAlert(p);
 				    }
 			    }
 		    }
 	    }
 	    return true;
-    }
-  
-    private String message(String[] args, String replaceWith) {
-    	StringBuilder builder = new StringBuilder();
-    	for (int i = 0; i < args.length; i++) {
-    		args[i].replace("{PLAYER}", replaceWith);
-    		args[i].replace("Christmas", christmas);
-    		builder.append(args[i]);
-    		builder.append(" ");
-    	}
-    	return builder.toString().trim();
-    }
-    
-    private void sendActionBar(String message) { 
-    	
-    }
-    
-    private void sendTitle(String title, String subtitle, CommandSender sender) {
-    	for (Player all : Bukkit.getOnlinePlayers()) {
-    		/* Replace things */
-    		title.replace("Christmas", christmas).replace("{PLAYER}", sender.getName());
-    		subtitle.replace("Christmas", christmas).replace("{PLAYER}", sender.getName());
-    		all.sendTitle(ChatColor.translateAlternateColorCodes('&', title), ChatColor.translateAlternateColorCodes('&', subtitle));
-    	}
-    }
-    
-    private void sendChatAlert(String message, CommandSender sender) {
-    	message = ChatColor.translateAlternateColorCodes('&', message.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
-    	broadcast(message);
-    	for (Player all : Bukkit.getOnlinePlayers()) {
-    		all.sendMessage(message);
-    	}
     }
   
     /* Send message supports color */
@@ -264,32 +228,6 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     	}
     }
     
-    private void sendMessage(CommandSender sender, String message) {
-    	if (sender instanceof Player) {
-    		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-    	} else if (sender instanceof ConsoleCommandSender) {
-    		broadcast(message);
-    	}
-    }
-  
-    private void chatAlert(String message) {
-    	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message));
-    }
-    
-    private void stopGlow(Integer time, Player p) {
-    	new BukkitRunnable() {
-			public void run() {
-				p.setGlowing(false);
-			}
-    	}.runTaskLater(this, time * 20);
-    }
-    
-    public void saveFile(String file) {
-		File customConfigFile = null;
-		if (customConfigFile == null) customConfigFile = new File(getDataFolder(), file);
-	    if (!customConfigFile.exists()) this.saveResource(file, false);
-	}
-    
     private void counter(Integer time) {
     	new BukkitRunnable() {
 			public void run() {
@@ -308,4 +246,21 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 		}.runTaskLater(this, time * 20);
     }
     
+    private void sendMessage(CommandSender sender, String message) {
+    	if (sender instanceof Player) {
+    		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+    	} else if (sender instanceof ConsoleCommandSender) {
+    		broadcast(message);
+    	}
+    }
+    
+    public void saveFile(String file) {
+		File customConfigFile = null;
+		if (customConfigFile == null) customConfigFile = new File(getDataFolder(), file);
+	    if (!customConfigFile.exists()) this.saveResource(file, false);
+	}
+    
+    public static SimpleChatAlert getSCA() {
+		return sca;
+	}
 }
