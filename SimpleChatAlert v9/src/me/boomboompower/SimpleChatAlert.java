@@ -48,7 +48,7 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 	private static SimpleChatAlert sca;
     private PlayerConnection playerConnection;
     private BarFlag flags = BarFlag.PLAY_BOSS_MUSIC;
-    private BarColor color = BarColor.RED;
+    private BarColor color = BarColor.PURPLE;
     private BarStyle style = BarStyle.SOLID;
     private BossBar bar = Bukkit.createBossBar("", color, style, flags);
     private Integer counter = 0;
@@ -106,6 +106,10 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     		bar.removePlayer(all);
     		bar.hide();
     		all.resetTitle();
+    		
+    		if (getConfig().getBoolean("Glow")) {
+    			all.setGlowing(false);
+    		}
     	}
     }
   
@@ -121,10 +125,18 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     				sendMessage(sender, "");
     				sendMessage(sender, "&bReload &7- &aReloads the plugin");
     				sendMessage(sender, "&bStop &7- &aStops the plugin");
+    				sendMessage(sender, "&bStopGlow &7- &aStops sender glowing");
+    				sendMessage(sender, "&bRemoveBoss &7- &aRemoves the bossbar");
     				sendMessage(sender, "");
     				sendMessage(sender, "&e-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
     			} else if (args[0].equalsIgnoreCase("stop")) {
     				this.setEnabled(false);
+    			} else if (args[0].equalsIgnoreCase("stopglow")) {
+    				if (sender instanceof Player) {
+    					((Player) sender).setGlowing(false);
+    				} else {
+    					sendMessage(sender, "&cOnly a player may use this command!");
+    				}
     			} else if (args[0].equalsIgnoreCase("removeboss")) {
     				for (Player all : Bukkit.getOnlinePlayers()) {
     					bar.removePlayer(all);
@@ -185,7 +197,8 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    } if (getConfig().getBoolean("Title")) {
 				    	AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
 				    } if (getConfig().getBoolean("Glow")) {
-				    	AlertUtils.glowAlert(p);
+				    	p.setGlowing(true);
+				    	stopGlowing(p);
 				    }
 			    }
 		    }
@@ -218,10 +231,10 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     	message = ChatColor.translateAlternateColorCodes('&', message.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
     	
     	for (Player all : Bukkit.getOnlinePlayers()) {
-    		
+    		bar.setTitle(message);
     		bar.removeFlag(BarFlag.PLAY_BOSS_MUSIC);
     		bar.setProgress(100);
-    		
+    		bar.setColor(color);
     		bar.addPlayer(all);
     		
     		counter(1);
@@ -231,9 +244,10 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     private void counter(Integer time) {
     	new BukkitRunnable() {
 			public void run() {
-				if (counter < 11) {
+				if (counter < 6) {
 					counter++;
-					bar.setProgress(bar.getProgress() - 10);
+					bar.setProgress(bar.getProgress() - 20);
+					bar.show();
 					counter(time);
 				} else {
 					for (Player all : Bukkit.getOnlinePlayers()) {
@@ -244,6 +258,14 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				}
 			}
 		}.runTaskLater(this, time * 20);
+    }
+    
+    private void stopGlowing(Player p) {
+    	new BukkitRunnable() {
+			public void run() {
+				p.setGlowing(false);
+			}
+    	}.runTaskLater(this, getConfig().getInt("GlowTime") * 20);
     }
     
     private void sendMessage(CommandSender sender, String message) {

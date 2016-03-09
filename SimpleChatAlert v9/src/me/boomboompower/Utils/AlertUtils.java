@@ -4,19 +4,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.ChatColor;
 
 import me.boomboompower.SimpleChatAlert;
-import net.md_5.bungee.api.ChatColor;
+
 import net.minecraft.server.v1_9_R1.IChatBaseComponent;
+import net.minecraft.server.v1_9_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_9_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_9_R1.PlayerConnection;
-import net.minecraft.server.v1_9_R1.IChatBaseComponent.ChatSerializer;
 
 public class AlertUtils extends SimpleChatAlert {
 	
 	private static String christmas = "&aC&ch&ar&ci&as&ct&am&ca&as&r";
+	private static AlertUtils utils;
 
 	public static void titleAlert(CommandSender sender, int fadeIn, int stay, int fadeOut, String title, String subtitle) {
 		
@@ -43,7 +44,7 @@ public class AlertUtils extends SimpleChatAlert {
 		message = ChatColor.translateAlternateColorCodes('&', message.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));	
 		broadcast(message);	
 		for (Player all : Bukkit.getOnlinePlayers()) {
-			all.sendMessage(message);	
+			all.sendMessage(message);
 		}   
 	}
 	
@@ -69,20 +70,11 @@ public class AlertUtils extends SimpleChatAlert {
     	return builder.toString().trim();
     }
 	
-	public static void glowAlert(Player p) {
-		p.setGlowing(true);
-		stopGlowing(SimpleChatAlert.getSCA().getConfig().getInt("GlowTime"), p);
-	}
-	
-	private static void stopGlowing(Integer time, Player p) {
-    	new BukkitRunnable() {
-			public void run() {
-				p.setGlowing(false);
-			}
-    	}.runTaskLater(SimpleChatAlert.getSCA(), time * 20);
-    }
-	
 	private static void broadcast(String message) {
     	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
+	
+	public static AlertUtils getUtils() {
+		return utils;
+	}
 }
