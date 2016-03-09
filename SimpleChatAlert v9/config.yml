@@ -22,7 +22,7 @@ NoMessage: '&cPlease add a message! Example: &4&o/alert Welcome to the server!'
 # Do you want the command to put the message into the chat #
 ChatAlert: true
 
-# ----------- CURRENTLY NOT WORKING ON PURPOSE ----------- #
+# No API is needed for this feature its now 110% built in! #
 ActionBar: false
 
 # No API is needed, this is now built in! :D               #
