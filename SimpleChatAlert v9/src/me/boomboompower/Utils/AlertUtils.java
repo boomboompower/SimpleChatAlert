@@ -60,6 +60,10 @@ public class AlertUtils extends SimpleChatAlert {
 		}
 	}
 	
+	public static void playerListAlert(CommandSender sender, String headerMessage, String footerMessage) {
+		
+	}
+	
 	public static String getMessage(String[] args, String replaceWith) {
     	StringBuilder builder = new StringBuilder();
     	for (int i = 0; i < args.length; i++) {

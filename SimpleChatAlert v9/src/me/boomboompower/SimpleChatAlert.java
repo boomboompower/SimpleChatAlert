@@ -57,9 +57,6 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     public void onEnable() {
     	saveDefaultConfig();
     	saveFile("README.yml");
-    	
-        String version = getDescription().getVersion();
-        PluginDescriptionFile pdfFile = getDescription();
         
         if (!Bukkit.getServer().getClass().getPackage().getName().contains("v1_9")) {
         	status("&cDisabled");
@@ -72,7 +69,7 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
         status("&aEnabled");
         
         if (getConfig().getBoolean("UpdateChecker")) {
-        	updateChecker = new UpdateChecker(version);
+        	updateChecker = new UpdateChecker(getDescription().getVersion());
         	if ((!updateChecker.updateNeeded()) || ((updateChecker.getLastestVersion() == null) && (updateChecker.getLink() == null))) {
         		broadcast("&9========================= &bSCA &9==========================");
                 broadcast("");
@@ -81,7 +78,7 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
                 broadcast("");
                 broadcast("&9========================= &bSCA &9==========================");
         	}
-        	else if (updateChecker.getLastestVersion().equals(pdfFile.getVersion())) {
+        	else if (updateChecker.getLastestVersion().equals(getDescription().getVersion())) {
         		broadcast("&9========================= &bSCA &9==========================");
         		broadcast("");
         		broadcast("&aYou have the latest version for SimpleChatAlert!");
@@ -127,6 +124,7 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     				sendMessage(sender, "&bStop &7- &aStops the plugin");
     				sendMessage(sender, "&bStopGlow &7- &aStops sender glowing");
     				sendMessage(sender, "&bRemoveBoss &7- &aRemoves the bossbar");
+    				sendMessage(sender, "&bServerInfo &7- &aDisplay server info");
     				sendMessage(sender, "");
     				sendMessage(sender, "&e-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
     			} else if (args[0].equalsIgnoreCase("stop")) {
@@ -137,6 +135,11 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     				} else {
     					sendMessage(sender, "&cOnly a player may use this command!");
     				}
+    			} else if (args[0].equalsIgnoreCase("serverinfo")) {
+    				sendMessage(sender, "&aRunning: &2" + Bukkit.getServer().getBukkitVersion());
+    				sendMessage(sender, "&aCraftbukkit Version: &2" + getServer().getVersion());
+    				sendMessage(sender, "&aYour NMS: &2" + getServer().getClass().getPackage().getName());
+    				sendMessage(sender, "&aPlugin Version: &2SimpleChatAlert v" + getDescription().getVersion());
     			} else if (args[0].equalsIgnoreCase("removeboss")) {
     				for (Player all : Bukkit.getOnlinePlayers()) {
     					bar.removePlayer(all);
@@ -208,15 +211,13 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
   
     /* Send message supports color */
     private void status(String status) {
-    	PluginDescriptionFile pdfFile = getDescription();
-        
         broadcast("&e-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         broadcast("");
         broadcast("&bThe &rSimpleChatAlert &bPlugin has been " + status + "&b!");
         broadcast("&bReport any bugs/errors! - &fSCA Dev Team");
         broadcast("");
         broadcast("&e-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-        broadcast("&aYou Are Using Build Version: &3" + pdfFile.getVersion());
+        broadcast("&aYou Are Using Build Version: &3" + getDescription().getVersion());
     }
     
     private static void broadcast(String message) {
