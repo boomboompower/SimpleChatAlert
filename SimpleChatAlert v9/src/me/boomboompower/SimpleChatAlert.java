@@ -178,6 +178,8 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    	for (Player all : Bukkit.getOnlinePlayers()) {
 				    		AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
 				    	}
+				    } if (getConfig().getBoolean("PlayerList")) {
+				    	AlertUtils.playerListAlert(sender, getConfig().getString("PlayerListHeader"), getConfig().getString("PlayerListFooter") + AlertUtils.getMessage(args, sender.getName()));
 				    }
 			    }
 		    } else {
@@ -199,6 +201,8 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    	}
 				    } if (getConfig().getBoolean("Title")) {
 				    	AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
+				    } if (getConfig().getBoolean("PlayerList")) {
+				    	AlertUtils.playerListAlert(sender, getConfig().getString("PlayerListHeader"), getConfig().getString("PlayerListFooter") + AlertUtils.getMessage(args, sender.getName()));
 				    } if (getConfig().getBoolean("Glow")) {
 				    	p.setGlowing(true);
 				    	stopGlowing(p);

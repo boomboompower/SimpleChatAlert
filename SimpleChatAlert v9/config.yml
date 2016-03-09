@@ -41,6 +41,16 @@ TitlePrefix: '&4&lALERT:'
 # Change the subtitles color/format, must have '' in it    #
 TitleColor: '&c&l'
 
+# Do you want the alert to show up on the PlayerList?      #
+# This is also known as the "Header and Footer", enjoy!    #
+PlayerList: false
+
+# What do you want to show up on the Header/PlayerListTop  #
+PlayerListHeader: '&4&lALERT'
+
+# How do you want the format on Footer/Bottom to be?       #
+PlayerListFooter: '&c&l'
+
 # Do you want the sender to `Glow`? - EXPERIMENTAL FEATURE #
 Glow: false
 
