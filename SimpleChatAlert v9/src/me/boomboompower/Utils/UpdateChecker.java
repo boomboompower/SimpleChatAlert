@@ -1,3 +1,10 @@
+/** ==Plugin Information==
+ * @Name        SimpleChatAlert
+ * @Desription  A simple alert plugin for your server!
+ * @Website     http://boomboompower.weebly.com/
+ * @Version     9.0
+ * @Author      boomboompower 
+**/
 
 package me.boomboompower.Utils;
 

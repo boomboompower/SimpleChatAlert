@@ -61,3 +61,6 @@ GlowTime: 10
 # If any are found, it will put a message in the console   #
 # Throws an error if you are not connected to the internet #
 UpdateChecker: false
+
+# Send anonymous statistics to http://mcstats.org its safe #
+MetricsLite: true

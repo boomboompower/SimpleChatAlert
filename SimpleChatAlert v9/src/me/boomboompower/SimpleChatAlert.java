@@ -9,6 +9,7 @@
 package me.boomboompower;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -34,8 +35,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.boomboompower.Utils.MetricsLite;
 import me.boomboompower.Utils.AlertUtils;
 import me.boomboompower.Utils.UpdateChecker;
+
 import net.minecraft.server.v1_9_R1.BossBattleServer;
 import net.minecraft.server.v1_9_R1.ChatMessage;
 import net.minecraft.server.v1_9_R1.EntityPlayer;
@@ -46,7 +49,6 @@ import net.minecraft.server.v1_9_R1.PlayerConnection;
 @SuppressWarnings({"deprecation", "unused"})
 public class SimpleChatAlert extends JavaPlugin implements Listener {
 	private static UpdateChecker updateChecker;
-	private static SimpleChatAlert sca;
     private PlayerConnection playerConnection;
     private BarFlag flags = BarFlag.PLAY_BOSS_MUSIC;
     private BarColor color = BarColor.PURPLE;
@@ -95,6 +97,17 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
         		broadcast("&9========================= &bSCA &9==========================");
         	}
         }
+        /* MetricsLite */
+        if (getConfig().getBoolean("MetricsLite")) {
+    		try {
+    	        MetricsLite metrics = new MetricsLite(this);
+    	        metrics.start();
+    	    } catch (IOException e) {
+    	    	broadcast("&7[&cSimpleChatAlert&7] &c&lFailed to submit statistics to mcstats.org:");
+    	        e.printStackTrace();
+    	    }
+        }
+        
     }
   
     public void onDisable() {
@@ -286,9 +299,5 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 		File customConfigFile = null;
 		if (customConfigFile == null) customConfigFile = new File(getDataFolder(), file);
 	    if (!customConfigFile.exists()) this.saveResource(file, false);
-	}
-    
-    public static SimpleChatAlert getSCA() {
-		return sca;
 	}
 }

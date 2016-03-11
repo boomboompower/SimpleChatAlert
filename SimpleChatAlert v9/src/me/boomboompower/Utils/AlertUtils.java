@@ -1,3 +1,11 @@
+/** ==Plugin Information==
+ * @Name        SimpleChatAlert
+ * @Desription  A simple alert plugin for your server!
+ * @Website     http://boomboompower.weebly.com/
+ * @Version     9.0
+ * @Author      boomboompower 
+**/
+
 package me.boomboompower.Utils;
 
 import org.bukkit.Bukkit;
@@ -17,7 +25,6 @@ import net.minecraft.server.v1_9_R1.PlayerConnection;
 public class AlertUtils extends SimpleChatAlert {
 	
 	private static String christmas = "&aC&ch&ar&ci&as&ct&am&ca&as&r";
-	private static AlertUtils utils;
 
 	public static void titleAlert(CommandSender sender, int fadeIn, int stay, int fadeOut, String title, String subtitle) {
 		
@@ -101,8 +108,4 @@ public class AlertUtils extends SimpleChatAlert {
 	private static void broadcast(String message) {
     	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
-	
-	public static AlertUtils getUtils() {
-		return utils;
-	}
 }
