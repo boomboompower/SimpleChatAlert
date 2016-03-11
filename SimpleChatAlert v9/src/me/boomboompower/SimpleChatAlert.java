@@ -35,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.boomboompower.Utils.AlertUtils;
+import me.boomboompower.Utils.UpdateChecker;
 import net.minecraft.server.v1_9_R1.BossBattleServer;
 import net.minecraft.server.v1_9_R1.ChatMessage;
 import net.minecraft.server.v1_9_R1.EntityPlayer;

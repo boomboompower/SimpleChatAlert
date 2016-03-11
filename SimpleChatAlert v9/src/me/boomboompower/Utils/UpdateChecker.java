@@ -1,5 +1,5 @@
 
-package me.boomboompower;
+package me.boomboompower.Utils;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;

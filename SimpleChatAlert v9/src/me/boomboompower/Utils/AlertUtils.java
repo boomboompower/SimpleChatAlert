@@ -1,7 +1,5 @@
 package me.boomboompower.Utils;
 
-import java.lang.reflect.Field;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
@@ -13,7 +11,6 @@ import me.boomboompower.SimpleChatAlert;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_9_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_9_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_9_R1.PlayerConnection;
 
@@ -64,28 +61,32 @@ public class AlertUtils extends SimpleChatAlert {
 	}
 	
 	public static void playerListAlert(CommandSender sender, String headerMessage, String footerMessage) {
-		headerMessage = ChatColor.translateAlternateColorCodes('&', headerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
-		footerMessage = ChatColor.translateAlternateColorCodes('&', footerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
-		for (Player all : Bukkit.getOnlinePlayers()) {
-			PlayerConnection connection = ((CraftPlayer)all).getHandle().playerConnection;
-			IChatBaseComponent header = ChatSerializer.a("{'color':'" + "', 'text':'" + headerMessage + "'}");
-			IChatBaseComponent footer = ChatSerializer.a("{'color':'" + "', 'text':'" + footerMessage + "'}");
-			PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-			try {
-				Field headerField = packet.getClass().getDeclaredField("a");
-				headerField.setAccessible(true);
-				headerField.set(packet, header);
-				headerField.setAccessible(!headerField.isAccessible());
-				
-				Field footerField = packet.getClass().getDeclaredField("b");
-				footerField.setAccessible(true);
-				footerField.set(packet, footer);
-				footerField.setAccessible(!footerField.isAccessible());
-				
-			} catch (Exception e) {}
-			connection.sendPacket(packet);
-		}
+		broadcast("&7[&cSimpleChatAlert&7] The PlayerList alert currently does not work! Sorry :(");
 	}
+	
+//	public static void playerListAlert(CommandSender sender, String headerMessage, String footerMessage) {
+//		headerMessage = ChatColor.translateAlternateColorCodes('&', headerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+//		footerMessage = ChatColor.translateAlternateColorCodes('&', footerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+//		for (Player all : Bukkit.getOnlinePlayers()) {
+//			PlayerConnection connection = ((CraftPlayer)all).getHandle().playerConnection;
+//			IChatBaseComponent header = ChatSerializer.a("{'color':'" + "', 'text':'" + headerMessage + "'}");
+//			IChatBaseComponent footer = ChatSerializer.a("{'color':'" + "', 'text':'" + footerMessage + "'}");
+//			PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+//			try {
+//				Field headerField = packet.getClass().getDeclaredField("a");
+//				headerField.setAccessible(true);
+//				headerField.set(packet, header);
+//				headerField.setAccessible(!headerField.isAccessible());
+//				
+//				Field footerField = packet.getClass().getDeclaredField("b");
+//				footerField.setAccessible(true);
+//				footerField.set(packet, footer);
+//				footerField.setAccessible(!footerField.isAccessible());
+//				
+//			} catch (Exception e) {}
+//			connection.sendPacket(packet);
+//		}
+//	}
 	
 	public static String getMessage(String[] args, String replaceWith) {
     	StringBuilder builder = new StringBuilder();
