@@ -260,10 +260,10 @@ public class SimpleChatAlert extends JavaPlugin {
     	handle = new BossBattleServer(CraftChatMessage.fromString(message, true)[0], convertColor(color), convertStyle(style));
     	
     	for (Player all : Bukkit.getOnlinePlayers()) {
-    		handle.setCreateFog(getFile("BossBar.yml").getBoolean("BossCreateFog"));
-    		handle.setDarkenSky(getFile("BossBar.yml").getBoolean("BossDarkenSky"));
-    		handle.setPlayMusic(getFile("BossBar.yml").getBoolean("BossPlayMusic"));
-    		handle.setProgress(getFile("BossBar.yml").getInt("BossProgress"));
+    		handle.setCreateFog(getFile("AlertSettings/" + "BossBar.yml").getBoolean("BossCreateFog"));
+    		handle.setDarkenSky(getFile("AlertSettings/" + "BossBar.yml").getBoolean("BossDarkenSky"));
+    		handle.setPlayMusic(getFile("AlertSettings/" + "BossBar.yml").getBoolean("BossPlayMusic"));
+    		handle.setProgress(getFile("AlertSettings/" + "BossBar.yml").getInt("BossProgress"));
     		handle.setVisible(true);
     		
     		bar.setVisible(true);
