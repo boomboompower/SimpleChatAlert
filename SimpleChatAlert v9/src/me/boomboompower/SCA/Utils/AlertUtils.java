@@ -2,11 +2,13 @@
  * @Name        SimpleChatAlert
  * @Desription  A simple alert plugin for your server!
  * @Website     http://boomboompower.weebly.com/
- * @Version     9.0
+ * @Version     9.1
  * @Author      boomboompower 
 **/
 
-package me.boomboompower.Utils;
+package me.boomboompower.SCA.Utils;
+
+import java.lang.reflect.Field;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,6 +21,7 @@ import me.boomboompower.SimpleChatAlert;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_9_R1.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_9_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_9_R1.PlayerConnection;
 
@@ -49,7 +52,7 @@ public class AlertUtils extends SimpleChatAlert {
 	 
 	public static void chatAlert(String message, CommandSender sender) {
 		message = ChatColor.translateAlternateColorCodes('&', message.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));	
-		broadcast(message);	
+		consoleAlert(message);	
 		for (Player all : Bukkit.getOnlinePlayers()) {
 			all.sendMessage(message);
 		}   
@@ -67,33 +70,33 @@ public class AlertUtils extends SimpleChatAlert {
 		}
 	}
 	
-	public static void playerListAlert(CommandSender sender, String headerMessage, String footerMessage) {
-		broadcast("&7[&cSimpleChatAlert&7] The PlayerList alert currently does not work! Sorry :(");
-	}
-	
 //	public static void playerListAlert(CommandSender sender, String headerMessage, String footerMessage) {
-//		headerMessage = ChatColor.translateAlternateColorCodes('&', headerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
-//		footerMessage = ChatColor.translateAlternateColorCodes('&', footerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
-//		for (Player all : Bukkit.getOnlinePlayers()) {
-//			PlayerConnection connection = ((CraftPlayer)all).getHandle().playerConnection;
-//			IChatBaseComponent header = ChatSerializer.a("{'color':'" + "', 'text':'" + headerMessage + "'}");
-//			IChatBaseComponent footer = ChatSerializer.a("{'color':'" + "', 'text':'" + footerMessage + "'}");
-//			PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
-//			try {
-//				Field headerField = packet.getClass().getDeclaredField("a");
-//				headerField.setAccessible(true);
-//				headerField.set(packet, header);
-//				headerField.setAccessible(!headerField.isAccessible());
-//				
-//				Field footerField = packet.getClass().getDeclaredField("b");
-//				footerField.setAccessible(true);
-//				footerField.set(packet, footer);
-//				footerField.setAccessible(!footerField.isAccessible());
-//				
-//			} catch (Exception e) {}
-//			connection.sendPacket(packet);
-//		}
+//		consoleAlert("&7[&cSimpleChatAlert&7] The PlayerList alert currently does not work! Sorry :(");
 //	}
+	
+	public static void playerListAlert(CommandSender sender, String headerMessage, String footerMessage) {
+		headerMessage = ChatColor.translateAlternateColorCodes('&', headerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+		footerMessage = ChatColor.translateAlternateColorCodes('&', footerMessage.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+		for (Player all : Bukkit.getOnlinePlayers()) {
+			PlayerConnection connection = ((CraftPlayer)all).getHandle().playerConnection;
+			IChatBaseComponent header = ChatSerializer.a("{\"text\": \"" + headerMessage + "\"}");
+			IChatBaseComponent footer = ChatSerializer.a("{\"text\": \"" + footerMessage + "\"}");
+			PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+			try {
+				Field headerField = packet.getClass().getDeclaredField("a");
+				headerField.setAccessible(true);
+				headerField.set(packet, header);
+				headerField.setAccessible(!headerField.isAccessible());
+				
+				Field footerField = packet.getClass().getDeclaredField("b");
+				footerField.setAccessible(true);
+				footerField.set(packet, footer);
+				footerField.setAccessible(!footerField.isAccessible());
+				
+			} catch (Exception e) {}
+			connection.sendPacket(packet);
+		}
+	}
 	
 	public static String getMessage(String[] args, String replaceWith) {
     	StringBuilder builder = new StringBuilder();
@@ -105,7 +108,7 @@ public class AlertUtils extends SimpleChatAlert {
     	return builder.toString().trim();
     }
 	
-	private static void broadcast(String message) {
-    	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+	private static void consoleAlert(String message) {
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 }

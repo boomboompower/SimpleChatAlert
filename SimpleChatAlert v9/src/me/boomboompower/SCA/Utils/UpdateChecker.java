@@ -2,11 +2,11 @@
  * @Name        SimpleChatAlert
  * @Desription  A simple alert plugin for your server!
  * @Website     http://boomboompower.weebly.com/
- * @Version     9.0
+ * @Version     9.1
  * @Author      boomboompower 
 **/
 
-package me.boomboompower.Utils;
+package me.boomboompower.SCA.Utils;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;

@@ -2,7 +2,7 @@
  * @Name        SimpleChatAlert
  * @Desription  A simple alert plugin for your server!
  * @Website     http://boomboompower.weebly.com/
- * @Version     9.0
+ * @Version     9.1
  * @Author      boomboompower 
 **/
 
@@ -10,57 +10,56 @@ package me.boomboompower;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.boss.BarColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R1.boss.CraftBossBar;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_9_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.boomboompower.Utils.MetricsLite;
-import me.boomboompower.Utils.AlertUtils;
-import me.boomboompower.Utils.UpdateChecker;
+import com.google.common.base.Charsets;
 
+import me.boomboompower.SCA.Utils.AlertUtils;
+import me.boomboompower.SCA.Utils.MetricsLite;
+import me.boomboompower.SCA.Utils.UpdateChecker;
+
+import net.minecraft.server.v1_9_R1.BossBattle;
 import net.minecraft.server.v1_9_R1.BossBattleServer;
-import net.minecraft.server.v1_9_R1.ChatMessage;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_9_R1.PacketPlayOutTitle.EnumTitleAction;
 import net.minecraft.server.v1_9_R1.PlayerConnection;
 
 @SuppressWarnings({"deprecation", "unused"})
-public class SimpleChatAlert extends JavaPlugin implements Listener {
+public class SimpleChatAlert extends JavaPlugin {
 	private static UpdateChecker updateChecker;
     private PlayerConnection playerConnection;
-    private BarFlag flags = BarFlag.PLAY_BOSS_MUSIC;
-    private BarColor color = BarColor.PURPLE;
-    private BarStyle style = BarStyle.SOLID;
-    private BossBar bar = Bukkit.createBossBar("", color, style, flags);
-    private Integer counter = 0;
+    private FileConfiguration newConfig = null;
+    private File configFile = null;
+    private Server server;
+    private BossBar bar = server.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG);
     private String christmas = "&aC&ch&ar&ci&as&ct&am&ca&as&r";
 	
     public void onEnable() {
     	saveDefaultConfig();
     	saveFile("README.yml");
-        
+    	saveA("BossBar.yml");
+    	saveA("ActionBar.yml");
+    	saveA("Title.yml");
+    	
         if (!Bukkit.getServer().getClass().getPackage().getName().contains("v1_9")) {
         	status("&cDisabled");
         	broadcast("&ePlease use Spigot/Craftbukkit v1.9.X to use this version!");
@@ -107,15 +106,13 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     	        e.printStackTrace();
     	    }
         }
-        
     }
   
     public void onDisable() {
     	status("&cDisabled");
     	
     	for (Player all : Bukkit.getOnlinePlayers()) {
-    		bar.removePlayer(all);
-    		bar.hide();
+    		bar.setVisible(false);
     		all.resetTitle();
     		
     		if (getConfig().getBoolean("Glow")) {
@@ -131,7 +128,8 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     		} if (args.length == 0) {
     			sendMessage(sender, "&cPlease do &4&o/sca help&c for a list of commands!");
     		} else try {
-    			if (args[0].equalsIgnoreCase("help")) {
+    			switch(args[0].toLowerCase()) {
+    			case "help":
     				sendMessage(sender, "&e-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
     				sendMessage(sender, "");
     				sendMessage(sender, "&bReload &7- &aReloads the plugin");
@@ -141,33 +139,41 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     				sendMessage(sender, "&bServerInfo &7- &aDisplay server info");
     				sendMessage(sender, "");
     				sendMessage(sender, "&e-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-    			} else if (args[0].equalsIgnoreCase("stop")) {
+    				break;
+    			case "stop":
     				this.setEnabled(false);
-    			} else if (args[0].equalsIgnoreCase("stopglow")) {
-    				if (sender instanceof Player) {
-    					((Player) sender).setGlowing(false);
-    				} else {
-    					sendMessage(sender, "&cOnly a player may use this command!");
-    				}
-    			} else if (args[0].equalsIgnoreCase("serverinfo")) {
-    				sendMessage(sender, "&aRunning: &2" + Bukkit.getServer().getBukkitVersion());
-    				sendMessage(sender, "&aCraftbukkit Version: &2" + getServer().getVersion());
-    				sendMessage(sender, "&aYour NMS: &2" + getServer().getClass().getPackage().getName());
-    				sendMessage(sender, "&aPlugin Version: &2SimpleChatAlert v" + getDescription().getVersion());
-    			} else if (args[0].equalsIgnoreCase("removeboss")) {
+    				break;
+    			case "serverinfo":
+    				sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &aRunning: &2" + Bukkit.getServer().getBukkitVersion());
+    				sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &aCraftbukkit Version: &2" + getServer().getVersion());
+    				sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &aYour NMS: &2" + getServer().getClass().getPackage().getName());
+    				sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &aPlugin Version: &2SimpleChatAlert v" + getDescription().getVersion());
+    				break;
+    			case "removeboss":
+    				sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &aRemoved bossbar!");
     				for (Player all : Bukkit.getOnlinePlayers()) {
     					bar.removePlayer(all);
     					bar.hide();
-    				}
-    			} else if (args[0].equalsIgnoreCase("reload")) {
+    				} break;
+    			case "stopglow":
+    				if (sender instanceof Player) {
+    					((Player) sender).setGlowing(false);
+    				} else {
+    					sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &fOnly a player may use this command!");
+    				} break;
+    			case "reload":
     				reloadConfig();
+    				reloadConfig("ActionBar.yml");
+    				reloadConfig("BossBar.yml");
+    				reloadConfig("Title.yml");
     				sendMessage(sender, "&7[&c&lSimpleChatAlert&7] &aConfig reloaded!");
     				if (sender instanceof Player) {
     					Player p = (Player) sender;
     					broadcast("&7[&c&lSimpleChatAlert&7] &2" + p.getName() + "&a has reloaded the config!");
-    				}
-    			} else {
+    				} break;
+    			default:
     				sendMessage(sender, "&cUnknown command, do &4&o/sca help&c for help!");
+    				break;
     			}
     		} catch (ArrayIndexOutOfBoundsException e) {
     			sendMessage(sender, "&cUnknown command, do &4&o/sca help&c for help!");
@@ -179,16 +185,16 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 			    } else {
 				    if (getConfig().getBoolean("ChatAlert")) {
 				    	AlertUtils.chatAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
-				    } if (getConfig().getBoolean("BossBar")) {
+				    } if (getFile("AlertSettings/" + "BossBar.yml").getBoolean("BossBar")) {
 					    for (Player all : Bukkit.getOnlinePlayers()) {
-					    	bossAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
+					    	bar.removeAll();
+					    	bossAlert(getFile("BossBar.yml").getString("Prefix") + AlertUtils.getMessage(args, sender.getName()) + getFile("BossBar.yml").getString("Suffix"), sender, BarColor.PURPLE, BarStyle.SEGMENTED_20);
 					    }
-				    } if (getConfig().getBoolean("ActionBar")) {
+				    } if (getFile("AlertSettings/" + "ActionBar.yml").getBoolean("ActionBar")) {
 					    for (Player all : Bukkit.getOnlinePlayers()) {
-					    	all.getLastDamageCause().getEntity().sendMessage("");
-						    //ActionBarAPI.sendActionBar(all, ChatColor.translateAlternateColorCodes('&', getConfig().getString("Message") + message(args)).replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
+					    	AlertUtils.actionBarAlert(sender, getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()));
 					    }
-				    } if (getConfig().getBoolean("Title")) {
+				    } if (getFile("AlertSettings/" + "Title.yml").getBoolean("Title")) {
 				    	for (Player all : Bukkit.getOnlinePlayers()) {
 				    		AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
 				    	}
@@ -204,19 +210,20 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
 				    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("NoMessage")));
 			    } else if (args.length > 0) {
 				    if (getConfig().getBoolean("ChatAlert")) {
-				    	AlertUtils.chatAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
-				    } if (getConfig().getBoolean("BossBar")) {
+				    	AlertUtils.chatAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, p.getName()), p);
+				    } if (getFile("AlertSettings/" + "BossBar.yml").getBoolean("BossBar")) {
 				    	for (Player all : Bukkit.getOnlinePlayers()) {
-				    		bossAlert(getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()), sender);
+				    		bar.removeAll();
+				    		bossAlert(getFile("BossBar.yml").getString("Prefix") + AlertUtils.getMessage(args, sender.getName()) + getFile("BossBar.yml").getString("Suffix"), sender, BarColor.PURPLE, BarStyle.SEGMENTED_20);
 				    	}
-				    } if (getConfig().getBoolean("ActionBar")) {
+				    } if (getFile("AlertSettings/" + "ActionBar.yml").getBoolean("ActionBar")) {
 				    	for (Player all : Bukkit.getOnlinePlayers()) {
-				    		AlertUtils.actionBarAlert(all, getConfig().getString("Message") + AlertUtils.getMessage(args, sender.getName()));
+				    		AlertUtils.actionBarAlert(p, getConfig().getString("Message") + AlertUtils.getMessage(args, p.getName()));
 				    	}
-				    } if (getConfig().getBoolean("Title")) {
-				    	AlertUtils.titleAlert(sender, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, sender.getName()));
+				    } if (getFile("AlertSettings/" + "Title.yml").getBoolean("Title")) {
+				    	AlertUtils.titleAlert(p, 10, 50, 10, getConfig().getString("TitlePrefix"), getConfig().getString("TitleColor") + AlertUtils.getMessage(args, p.getName()));
 				    } if (getConfig().getBoolean("PlayerList")) {
-				    	AlertUtils.playerListAlert(sender, getConfig().getString("PlayerListHeader"), getConfig().getString("PlayerListFooter") + AlertUtils.getMessage(args, sender.getName()));
+				    	AlertUtils.playerListAlert(p, getConfig().getString("PlayerListHeader"), getConfig().getString("PlayerListFooter") + AlertUtils.getMessage(args, p.getName()));
 				    } if (getConfig().getBoolean("Glow")) {
 				    	p.setGlowing(true);
 				    	stopGlowing(p);
@@ -242,39 +249,57 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     	Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
     
-    private void bossAlert(String message, CommandSender sender) {
-    	this.flags = BarFlag.PLAY_BOSS_MUSIC;
-    	this.color = BarColor.PURPLE;
-    	this.style = BarStyle.SOLID;
-    	
+    private BossBattleServer handle;
+    private void bossAlert(String message, CommandSender sender, BarColor color, BarStyle style) {
     	message = ChatColor.translateAlternateColorCodes('&', message.replace("{PLAYER}", sender.getName()).replace("Christmas", christmas));
     	
+    	bar.setStyle(style);
+    	bar.setColor(color);
+    	bar.setTitle(message);
+    	
+    	handle = new BossBattleServer(CraftChatMessage.fromString(message, true)[0], convertColor(color), convertStyle(style));
+    	
     	for (Player all : Bukkit.getOnlinePlayers()) {
-    		bar.setTitle(message);
-    		bar.removeFlag(BarFlag.PLAY_BOSS_MUSIC);
-    		bar.setProgress(100);
-    		bar.setColor(color);
-    		bar.addPlayer(all);
+    		handle.setCreateFog(getFile("BossBar.yml").getBoolean("BossCreateFog"));
+    		handle.setDarkenSky(getFile("BossBar.yml").getBoolean("BossDarkenSky"));
+    		handle.setPlayMusic(getFile("BossBar.yml").getBoolean("BossPlayMusic"));
+    		handle.setProgress(getFile("BossBar.yml").getInt("BossProgress"));
+    		handle.setVisible(true);
     		
-    		counter(1);
+    		bar.setVisible(true);
+    		
+    		new BukkitRunnable() {
+    			public void run() {
+    				bar.setVisible(false);
+    			}
+    		}.runTaskLater(this, getFile("AlertSettings/" + "BossBar.yml").getInt("RemoveBossBar") * 20);
     	}
     }
     
-    private void counter(Integer time) {
+    private BossBattle.BarStyle convertStyle(BarStyle style) {
+    	switch (style) {
+    	default:
+    		return BossBattle.BarStyle.PROGRESS;
+    	case SEGMENTED_12: 
+    		return BossBattle.BarStyle.NOTCHED_6;
+    	case SEGMENTED_20: 
+    		return BossBattle.BarStyle.NOTCHED_10;
+    	case SEGMENTED_6: 
+    		return BossBattle.BarStyle.NOTCHED_12;
+    	case SEGMENTED_10: 
+    		return BossBattle.BarStyle.NOTCHED_20;
+    	}
+	}
+
+	private BossBattle.BarColor convertColor(BarColor color) {
+		BossBattle.BarColor nmsColor = BossBattle.BarColor.valueOf(color.name());
+		return nmsColor == null ? BossBattle.BarColor.WHITE : nmsColor;
+	}
+
+	private void barRemove(Integer time) {
     	new BukkitRunnable() {
 			public void run() {
-				if (counter < 6) {
-					counter++;
-					bar.setProgress(bar.getProgress() - 20);
-					bar.show();
-					counter(time);
-				} else {
-					for (Player all : Bukkit.getOnlinePlayers()) {
-						bar.removePlayer(all);
-						counter = 0;
-						break;
-					}
-				}
+				bar.setVisible(false);
 			}
 		}.runTaskLater(this, time * 20);
     }
@@ -290,14 +315,40 @@ public class SimpleChatAlert extends JavaPlugin implements Listener {
     private void sendMessage(CommandSender sender, String message) {
     	if (sender instanceof Player) {
     		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-    	} else if (sender instanceof ConsoleCommandSender) {
+    	} else {
     		broadcast(message);
     	}
     }
     
-    public void saveFile(String file) {
+    private void saveFile(String file) {
 		File customConfigFile = null;
 		if (customConfigFile == null) customConfigFile = new File(getDataFolder(), file);
 	    if (!customConfigFile.exists()) this.saveResource(file, false);
 	}
+    
+    private void saveA(String file) {
+    	File alertFile = null;
+    	if (alertFile == null) alertFile = new File(getDataFolder(), "AlertSettings/" + file);
+    	if (!alertFile.exists()) this.saveResource("AlertSettings/" + file, false);
+    }
+    
+    private YamlConfiguration getFile(String file) {
+		File getFile = new File(getDataFolder(), file);
+		YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(getFile);
+		
+		return newConfig;
+	}
+    
+    private void reloadConfig(String file) {
+    	
+    	configFile = new File(getDataFolder(), "AlertSettings/" + file);
+    	newConfig = YamlConfiguration.loadConfiguration(configFile);
+    
+    	InputStream defConfigStream = getResource("AlertSettings/" + file);
+    	
+    	if (defConfigStream == null) {
+    		return;	
+    	}     
+    	newConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
+    }
 }

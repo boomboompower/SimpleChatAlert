@@ -8,6 +8,8 @@
 #|  #####  ####  #     # #      #######  ##### |#
 #|---------------------------------------------|#
 
+Language: en_US
+
 # Change what the message looks like! Don't forget the ''  #
 # You can use {PLAYER} which puts the senders username!    #
 # You can also use color codes by using & -Enjoy SCA       #
@@ -24,22 +26,9 @@ NoMessage: '&cPlease add a message! Example: &4&o/alert Welcome to the server!'
 # Do you want the command to put the message into the chat #
 ChatAlert: true
 
-# No API is needed for this feature its now 110% built in! #
-ActionBar: false
-
-# No API is needed, this is now built in! :D               #
-BossBar: false
-
-# Allows you to make the alert be in the form of a title   #
-# Change TitlePrefix to change the top bar and edit        #
-# TitleColor to edit the subtitle no API needed for this!  #        
-Title: false
-
-# Change the title's color/format, must have '' in it.     #
-TitlePrefix: '&4&lALERT:'
-
-# Change the subtitles color/format, must have '' in it    #
-TitleColor: '&c&l'
+ActionBar: #Now located in ActionBar.yml
+BossBar: #Now located in BossBar.yml 
+Title: #Now located in Title.yml
 
 # Do you want the alert to show up on the PlayerList?      #
 # This is also known as the "Header and Footer", enjoy!    #
