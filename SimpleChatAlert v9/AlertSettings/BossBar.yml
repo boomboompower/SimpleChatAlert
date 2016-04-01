@@ -1,0 +1,19 @@
+# No API is needed, this is now built in!
+BossBar: false
+
+# The message before the alert
+Prefix: '&4&lALERT: &c&l'
+
+# The message after the alert
+Suffix: ''
+
+# How long in seconds, do you want the bossbar to stay?
+RemoveBossBar: 10
+
+# How big do you want the bossbar to be? 0-100
+BossProgress: 100
+
+# Do you want the bossbar to do the following?
+BossCreateFog: false
+BossDarkenSky: false
+BossPlayMusic: false

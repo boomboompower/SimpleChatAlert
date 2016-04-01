@@ -36,7 +36,7 @@ public class AlertUtils extends SimpleChatAlert {
 		
 		for (Player all : Bukkit.getOnlinePlayers()) {
 			PlayerConnection connection = ((CraftPlayer) all).getHandle().playerConnection;
-
+			
 	        PacketPlayOutTitle packetPlayOutTimes = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadeIn, stay, fadeOut);
 	        connection.sendPacket(packetPlayOutTimes);
 

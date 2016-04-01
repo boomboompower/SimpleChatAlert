@@ -50,7 +50,6 @@ public class SimpleChatAlert extends JavaPlugin {
     private FileConfiguration newConfig = null;
     private File configFile = null;
     private Server server;
-    private BossBar bar = server.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG);
     private String christmas = "&aC&ch&ar&ci&as&ct&am&ca&as&r";
 	
     public void onEnable() {
@@ -107,6 +106,7 @@ public class SimpleChatAlert extends JavaPlugin {
     	    }
         }
     }
+    final BossBar bar = server.createBossBar("", BarColor.WHITE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG);
   
     public void onDisable() {
     	status("&cDisabled");
