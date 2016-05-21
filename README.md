@@ -1,5 +1,5 @@
 ![Main icon](http://goo.gl/5HcH7T)
-[![Build Status](https://travis-ci.org/boomboompower/SimpleChatAlert.svg?branch=master)](https://travis-ci.org/boomboompower/SimpleChatAlert)
+On travis the build is: [![Build Status](https://travis-ci.org/boomboompower/SimpleChatAlert.svg?branch=master)](https://travis-ci.org/boomboompower/SimpleChatAlert)
 
 Whats it for | New features 
 ------------ | -------------
