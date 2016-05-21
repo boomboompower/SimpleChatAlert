@@ -1,0 +1,59 @@
+#|----------------------------------------------|#
+#|  #####  ####  #     # ###### #######  #####  |#
+#| #      #    # ##    # #         #    #       |#
+#| #      #    # # #   # #         #    #       |#
+#| #      #    # #  #  # ####      #    #   ##  |#
+#| #      #    # #   # # #         #    #    #  |#
+#| #      #    # #    ## #         #    #    #  |#
+#|  #####  ####  #     # #      #######  #####  |#
+#|----------------------------------------------|#
+#| This was auto generated for SCA ${project.version} |#
+
+# Change what the message looks like! Don't forget the ''  #
+# You can use {PLAYER} which puts the senders username!    #
+# You can use {MESSAGE} to input where the arguments go    #
+# You can also use color codes by using & -Enjoy SCA       #
+Message: '&4&lALERT: &c&l{MESSAGE}'
+
+# Change what the mesage is if the sender does not have    #
+# the correct permission. You can use color codes.
+DenyMessage: '&4You do not have access to this command!'
+
+# Change what the message is if the sender does not imput  #
+# A message with the /alert command. Uses color codes.     #
+NoMessage: '&cPlease add a message! Example: &4&o/alert Welcome to the server!'
+
+# Do you want the command to put the message into the chat #
+ChatAlert: true
+
+# Do you want the alert to send a actionbar to all players #
+ActionBar: false
+
+# Do you wish for a title to be displayed with the alert?  #
+Title: false
+Top: '&4&lALERT:'
+Bottom: '&c&l{MESSAGE}'
+
+# These are the times for the titles anything below 0 will #
+# Simply not work. This is done it ticks! No API is needed #
+FadeIn: 20
+Stay: 60
+FadeOut: 20
+
+# If this is enabled the header and footer will display be #
+# Displayed in the tab list. This does not require an API! #
+PlayerList: false
+Header: '&4&lALERT:'
+Footer: '&c&l{MESSAGE}'
+
+# How many ticks do you want the alert to stay in the tab  #
+# List header and footer. Anything below 1 will be ignored #
+# If disable is false, the alert will display for as long  #
+# As the reciever is online when they quit it will vanish. #
+Disable: true
+DisableTime: 100
+
+# Send anonymous usage statistics to the mcstats.org? Don't #
+# Worry this will only help us to get a general idea about  #
+# How many people use the plugin. Feel free to disable this #
+Metrics: true
