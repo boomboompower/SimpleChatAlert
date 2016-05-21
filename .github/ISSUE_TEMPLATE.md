@@ -1,11 +1,15 @@
-If you are going to report an issue with the plugin, please follow this format! Check out https://github.com/boomboompower/SimpleChatAlert/wiki/Commands for help!
+If you are going to report an issue with the plugin, please follow this format!
+If you are confused, check out this [example issue](https://github.com/boomboompower/SimpleChatAlert/issues/2).
 
-**Server Version:**
+**Server Version: **
 
-**Running:**
+**Running: **
 
-**NMS Version:**
+This is not required.
+**NMS Version: **
 
-**Plugin Version:**
+**Plugin Version: **
 
-**Error in console:**
+**Error in console: **
+
+> (Error here in quotes)
